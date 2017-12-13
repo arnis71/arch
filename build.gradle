@@ -12,6 +12,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.junit.platform:junit-platform-gradle-plugin:$junitPlatformVersion"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$androidJunit5Version"
+
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
@@ -20,6 +23,9 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+    }
+    tasks.withType(Javadoc).all {
+        enabled = false
     }
 }
 
@@ -33,4 +39,6 @@ ext {
     kluent = '1.32'
 
     lintVersion = '25.2.0'
+
+    archVersion = '0.1'
 }
