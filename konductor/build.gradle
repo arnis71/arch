@@ -9,7 +9,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'de.mobilej.unmock:UnMockPlugin:0.6.0'
+        classpath 'de.mobilej.unmock:UnMockPlugin:0.6.4'
     }
 }
 
@@ -33,11 +33,11 @@ configurations {
     lintChecks
 }
 
-unMock {
-    keep "android.os.Bundle"
-    keep "android.os.BaseBundle"
-    keep "android.text.TextUtils"
-}
+//unMock {
+//    keep "android.os.Bundle"
+//    keep "android.os.BaseBundle"
+//    keep "android.text.TextUtils"
+//}
 
 task copyLintJar(type: Copy) {
     from(configurations.lintChecks) {
