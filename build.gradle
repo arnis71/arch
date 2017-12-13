@@ -1,0 +1,41 @@
+buildscript {
+    ext.kotlin_version = '1.2.0'
+    ext.androidJunit5Version = '1.0.12'
+    ext.junitPlatformVersion = '1.0.1'
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:$junitPlatformVersion"
+        classpath "de.mannodermaus.gradle.plugins:android-junit5:$androidJunit5Version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+}
+
+ext {
+    supLibVer = '27.0.2'
+    anko = '0.10.1'
+    targetSdk = 27
+    buildTools = '27.0.1'
+    koin = '0.6.0'
+    spekVersion = '1.1.5'
+    kluent = '1.32'
+
+    lintVersion = '25.2.0'
+
+    lintapi = "com.android.tools.lint:lint-api:$lintVersion"
+    lintchecks = "com.android.tools.lint:lint-checks:$lintVersion"
+    lint = "com.android.tools.lint:lint:$lintVersion"
+    lintTests = "com.android.tools.lint:lint-tests:$lintVersion"
+}

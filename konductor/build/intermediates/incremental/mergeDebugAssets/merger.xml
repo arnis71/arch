@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/arnis/Konductor/konductor/src/main/assets"/><source path="/Users/arnis/Konductor/konductor/build/generated/assets/shaders/debug"/></dataSet><dataSet config="debug"><source path="/Users/arnis/Konductor/konductor/src/debug/assets"/></dataSet></merger>

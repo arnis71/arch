@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.mobilej.unmock:UnMockPlugin:0.6.0'
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'de.mobilej.unmock'
+apply from: "$rootDir/tests.gradle"
+
+android {
+    compileSdkVersion targetSdk
+    buildToolsVersion buildTools
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion targetSdk
+        versionCode 1
+        versionName "1.0"
+        consumerProguardFiles 'proguard-rules.txt'
+    }
+}
+
+configurations {
+    lintChecks
+}
+
+dependencies {
+    implementation "com.android.support:support-annotations:$supLibVer"
+    implementation "com.android.support:appcompat-v7:$supLibVer"
+    implementation "com.android.support:design:$supLibVer"
+
+    lintChecks project(path: ':conductor-lint', configuration: 'lintChecks')
+
+    unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+unMock {
+    keep "android.os.Bundle"
+    keep "android.os.BaseBundle"
+    keep "android.text.TextUtils"
+}
+
+task copyLintJar(type: Copy) {
+    from(configurations.lintChecks) {
+        rename { 'lint.jar' }
+    }
+    into 'build/intermediates/lint/'
+}
+
+project.afterEvaluate {
+    def compileLintTask = project.tasks.find { it.name == 'compileLint' }
+    compileLintTask.dependsOn(copyLintJar)
+}
+
+ext.artifactId = 'conductor'
+
+repositories {
+    mavenCentral()
+}

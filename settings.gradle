@@ -1,0 +1,1 @@
+include /*':app',*/ ':konductor-arch', ':conductor-lint', ':konductor'
