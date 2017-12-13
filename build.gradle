@@ -40,5 +40,5 @@ ext {
 
     lintVersion = '25.2.0'
 
-    archVersion = '0.1'
+    archVersion = '0.1.1'
 }

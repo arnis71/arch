@@ -61,3 +61,30 @@ dependencies {
     unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'konductor'
+
+    publishedGroupId = 'com.arnis'
+    libraryName = 'konductor'
+    artifact = 'konductor'
+
+    libraryDescription = ''
+
+    siteUrl = 'https://github.com/arnis71/arch'
+    gitUrl = 'https://github.com/arnis71/arch.git'
+
+    libraryVersion = archVersion
+
+    developerId = 'arnis71'
+    developerName = 'Arnis'
+    developerEmail = 'arnis71@gmail.com'
+    organization = 'arnis71'
+    licenseName = 'The Apache Software License, Version 2.0'  //Example for license
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/quangctkm9207/template-files/master/android/gradle/install.gradle'
+apply from: 'https://raw.githubusercontent.com/quangctkm9207/template-files/master/android/gradle/bintray.gradle'

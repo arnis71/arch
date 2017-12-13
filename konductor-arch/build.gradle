@@ -34,11 +34,11 @@ dependencies {
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'arch'
+    bintrayName = 'konductor-arch'
 
     publishedGroupId = 'com.arnis'
     libraryName = 'konductor-arch'
-    artifact = 'arch'
+    artifact = 'konductor-arch'
 
     libraryDescription = ''
 
