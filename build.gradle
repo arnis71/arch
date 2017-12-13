@@ -33,9 +33,4 @@ ext {
     kluent = '1.32'
 
     lintVersion = '25.2.0'
-
-    lintapi = "com.android.tools.lint:lint-api:$lintVersion"
-    lintchecks = "com.android.tools.lint:lint-checks:$lintVersion"
-    lint = "com.android.tools.lint:lint:$lintVersion"
-    lintTests = "com.android.tools.lint:lint-tests:$lintVersion"
 }

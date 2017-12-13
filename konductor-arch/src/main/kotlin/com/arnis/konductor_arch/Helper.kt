@@ -1,5 +1,7 @@
 package com.arnis.konductor_arch
 
+import com.arnis.konductor.Controller
+import com.arnis.konductor.changehandler.FadeChangeHandler
 
 /** Created by arnis on 07/12/2017 */
 

@@ -1,3 +1,9 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'de.mobilej.unmock'
+
+apply from: "$rootDir/tests.gradle"
+
 buildscript {
     repositories {
         jcenter()
@@ -6,11 +12,6 @@ buildscript {
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.0'
     }
 }
-
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'de.mobilej.unmock'
-apply from: "$rootDir/tests.gradle"
 
 android {
     compileSdkVersion targetSdk
@@ -25,19 +26,11 @@ android {
     }
 }
 
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
+
 configurations {
     lintChecks
-}
-
-dependencies {
-    implementation "com.android.support:support-annotations:$supLibVer"
-    implementation "com.android.support:appcompat-v7:$supLibVer"
-    implementation "com.android.support:design:$supLibVer"
-
-    lintChecks project(path: ':conductor-lint', configuration: 'lintChecks')
-
-    unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 unMock {
@@ -58,8 +51,13 @@ project.afterEvaluate {
     compileLintTask.dependsOn(copyLintJar)
 }
 
-ext.artifactId = 'conductor'
+dependencies {
+    implementation "com.android.support:support-annotations:$supLibVer"
+    implementation "com.android.support:appcompat-v7:$supLibVer"
+    implementation "com.android.support:design:$supLibVer"
 
-repositories {
-    mavenCentral()
+    lintChecks project(path: ':conductor-lint', configuration: 'lintChecks')
+
+    unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.arnis.konductor.Controller
+import com.arnis.konductor.RouterTransaction
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.UI
 
