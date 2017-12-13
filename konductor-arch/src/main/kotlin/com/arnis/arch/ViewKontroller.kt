@@ -1,4 +1,4 @@
-package com.arnis.konductor_arch
+package com.arnis.arch
 
 import android.content.Context
 import android.view.LayoutInflater

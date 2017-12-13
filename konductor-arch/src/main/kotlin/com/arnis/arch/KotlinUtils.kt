@@ -1,4 +1,4 @@
-package com.arnis.konductor_arch
+package com.arnis.arch
 
 import android.annotation.TargetApi
 import android.app.Activity

@@ -1,4 +1,4 @@
-package com.arnis.konductor_arch
+package com.arnis.arch
 
 import org.amshove.kluent.`should be instance of`
 import org.amshove.kluent.shouldBeEqualTo

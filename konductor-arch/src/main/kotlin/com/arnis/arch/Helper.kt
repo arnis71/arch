@@ -1,4 +1,4 @@
-package com.arnis.konductor_arch
+package com.arnis.arch
 
 import com.arnis.konductor.Controller
 import com.arnis.konductor.changehandler.FadeChangeHandler

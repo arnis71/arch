@@ -1,4 +1,4 @@
-package com.arnis.konductor_arch
+package com.arnis.arch
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -6,7 +6,7 @@ import com.arnis.konductor.ChangeHandlerFrameLayout
 import com.arnis.konductor.Router
 import com.arnis.konductor.RouterTransaction
 import com.arnis.konductor.attachRouter
-import com.arnis.konductor_arch.Konductor.Companion.HOME
+import com.arnis.arch.Konductor.Companion.HOME
 
 /** Created by arnis on 07/12/2017 */
 
