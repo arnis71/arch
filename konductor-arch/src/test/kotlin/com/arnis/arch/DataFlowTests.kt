@@ -1,6 +1,13 @@
 package com.arnis.arch
 
+import org.amshove.kluent.Verify
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be instance of`
+import org.amshove.kluent.`should not be equal to`
+import org.amshove.kluent.`should throw`
+import org.amshove.kluent.called
+import org.amshove.kluent.on
+import org.amshove.kluent.should
 import org.amshove.kluent.shouldBeEqualTo
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
@@ -11,12 +18,10 @@ import org.jetbrains.spek.api.dsl.on
 
 class DataFlowReturnValues: Spek({
     given("dataflow of string") {
-        val dataFlow = DataFlow { "Hello" }
+        val dataFlow = TestDataFlow { "Hello" }
         on("flow") {
             var result = ""
-            dataFlow.updateUi = {
-                result = it
-            }
+            dataFlow.onFlow { result = it }
             dataFlow.flow()
             it("should return value inside the lambda") {
                 result shouldBeEqualTo "Hello"
@@ -26,12 +31,10 @@ class DataFlowReturnValues: Spek({
 
     given("dataflow of custom object") {
         val customObject = CustomObject()
-        val dataFlow = DataFlow { customObject }
+        val dataFlow = TestDataFlow { customObject }
         on("flow") {
             lateinit var result: CustomObject
-            dataFlow.updateUi = {
-                result = it
-            }
+            dataFlow.onFlow { result = it }
             dataFlow.flow()
             it("should return object of type as specified lambda") {
                 result `should be instance of` CustomObject::class
@@ -40,19 +43,35 @@ class DataFlowReturnValues: Spek({
     }
 })
 
+class TestDataFlow<out T>(producer: DataFlowProducer<T>): BaseDataFlow<T>(producer)
+
 class CustomObject
 
-//class DataFlowBinding: Spek({
-//    given("dataflow") {
-//        val dataFlow = DataFlow { "test" }
-//        on("bind to view kontroller") {
-//            var result = ""
-//            val mockKontroller = mock<ViewKontroller>()
-//            dataFlow.bindTo(mockKontroller, true, { result = it })
-//            Verify on mockKontroller that mockKontroller.addLifecycleListener(any()) was called
-//            it("should update data immideately") {
-//                result `should be equal to` "test"
-//            }
-//        }
-//    }
-//})
+class DataFlowBinding: Spek({
+    given("kontroller dataflow") {
+        var result = "init"
+        val dataFlow = KontrollerDataFlow { "test" }
+        dataFlow.onFlow { result = it }
+
+        on("bind to view kontroller with updateOnAttach set to false") {
+            dataFlow.updateOnAttach = false
+            it("should not update after attach") {
+                dataFlow.attach()
+                result `should be equal to` "init"
+            }
+        }
+        on("bind to view kontroller with updateOnAttach set to true") {
+            dataFlow.updateOnAttach = true
+            it("should update after attach") {
+                dataFlow.attach()
+                result `should be equal to` "test"
+            }
+        }
+        on("unbind from view kontroller") {
+            dataFlow.stop()
+            it("should throw NPE") {
+                { dataFlow.flow() } `should throw` KotlinNullPointerException::class
+            }
+        }
+    }
+})

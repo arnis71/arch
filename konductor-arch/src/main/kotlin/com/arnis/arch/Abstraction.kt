@@ -7,15 +7,15 @@ import kotlin.reflect.KClass
 /** Created by arnis on 13/12/2017 */
 
 abstract class Abstraction {
-    val providers: ArrayMap<KClass<*>, DataFlow<*>> = arrayMapOf()
+    val providers: ArrayMap<KClass<*>, KontrollerDataFlow<*>> = arrayMapOf()
 
-    inline fun <reified T> register(dataFlow: DataFlow<T>)
+    inline fun <reified T> register(dataFlow: KontrollerDataFlow<T>)
             = providers.put(T::class, dataFlow)
 
-    inline fun <reified T> get(): DataFlow<T> {
+    inline fun <reified T> get(): KontrollerDataFlow<T> {
         return providers.asSequence().filter {
             it.key equal T::class
-        }.first().value as DataFlow<T>
+        }.first().value as KontrollerDataFlow<T>
     }
 
     abstract fun handle(viewId: Int)

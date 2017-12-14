@@ -31,9 +31,10 @@ abstract class ViewKontroller: Controller() {
 
 inline fun <reified T> ViewKontroller.bind(updateOnAttach: Boolean = true,
                                            updateImmediately: Boolean = false,
-                                           noinline updateUi: (data: T) -> Unit): DataFlow<T> {
+                                           noinline update: (data: T) -> Unit): KontrollerDataFlow<T> {
     return abstraction.get<T>().also {
         it.updateOnAttach = updateOnAttach
-        it.bindTo(this, updateImmediately, updateUi)
+        it.onFlow(update)
+        it.bindTo(this)
     }
 }
