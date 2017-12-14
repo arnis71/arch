@@ -1,1 +1,1 @@
-include /*':app',*/ ':konductor-arch', ':conductor-lint', ':konductor'
+include ':app', ':konductor-arch', ':conductor-lint', ':konductor', ':common'

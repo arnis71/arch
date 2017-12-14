@@ -1,4 +1,4 @@
-package com.arnis.arch
+package com.arnis.common
 
 import android.annotation.TargetApi
 import android.app.Activity
@@ -32,6 +32,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.system.Os.close
 import android.util.ArrayMap
 import android.util.Base64
 import android.util.Log
@@ -59,6 +60,8 @@ import org.jetbrains.anko.activityManager
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.ClassCastException
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit

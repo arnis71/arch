@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion targetSdk
-        versionCode libVersionCode
-        versionName libVersionName
+        versionCode 1
+        versionName "1.0"
     }
 
     sourceSets {
@@ -21,4 +21,10 @@ android {
 dependencies {
     implementation "com.android.support:appcompat-v7:$supLibVer"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.anko:anko-commons:$anko"
+    implementation "org.jetbrains.anko:anko-sdk19:$anko"
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko"
+    implementation "org.jetbrains.anko:anko-coroutines:$anko"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
 }

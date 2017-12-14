@@ -2,6 +2,8 @@ package com.arnis.arch
 
 import android.util.ArrayMap
 import android.view.View
+import com.arnis.common.arrayMapOf
+import com.arnis.common.equal
 import kotlin.reflect.KClass
 
 /** Created by arnis on 13/12/2017 */
