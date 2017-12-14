@@ -20,8 +20,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion targetSdk
-        versionCode 1
-        versionName "1.0"
+        versionCode libVersionCode
+        versionName libVersionName
         consumerProguardFiles 'proguard-rules.txt'
     }
 }
@@ -44,6 +44,14 @@ task copyLintJar(type: Copy) {
         rename { 'lint.jar' }
     }
     into 'build/intermediates/lint/'
+}
+
+task verifyVersion << {
+    println()
+    println "VERSION CODE $android.defaultConfig.versionCode"
+    println()
+    println "VERSION NAME $android.defaultConfig.versionName"
+    println()
 }
 
 project.afterEvaluate {
@@ -75,7 +83,7 @@ ext {
     siteUrl = 'https://github.com/arnis71/arch'
     gitUrl = 'https://github.com/arnis71/arch.git'
 
-    libraryVersion = archVersion
+    libraryVersion = libVersionName
 
     developerId = 'arnis71'
     developerName = 'Arnis'

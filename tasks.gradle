@@ -1,0 +1,43 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+ext {
+    libVersionName = getVersionName()
+    libVersionCode = getVersionCode()
+}
+
+task bump << {
+    def type = new ByteArrayOutputStream()
+    exec {
+        commandLine 'echo', "$TYPE"
+        standardOutput = type
+    }
+    def releaseType = type.toString().trim()
+    def versionFile = new File("${rootProject.projectDir.path}/version.json")
+    def object = new JsonSlurper().parseText(versionFile.text)
+    switch (releaseType) {
+        case "patch": object.patch += 1
+            break
+        case "minor": object.minor += 1
+            break
+        case "major": object.major += 1
+            break
+        default: throw new Exception("unknown release type")
+    }
+    versionFile.withWriter { w -> w.write(JsonOutput.toJson(object)) }
+}
+
+def getVersionName() {
+    def object = getVersionObject()
+    return "${object.major}.${object.minor}.${object.patch}"
+}
+
+def getVersionCode() {
+    def object = getVersionObject()
+    return object.major * 100 + object.minor * 10 + object.patch
+}
+
+def getVersionObject() {
+    def versionFile = new File("${rootProject.projectDir.path}/version.json")
+    return new JsonSlurper().parseText(versionFile.text)
+}

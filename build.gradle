@@ -1,3 +1,5 @@
+apply from: "$rootDir/tasks.gradle"
+
 buildscript {
     ext.kotlin_version = '1.2.0'
     ext.androidJunit5Version = '1.0.12'

@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion targetSdk
-        versionCode 1
-        versionName archVersion
+        versionCode libVersionCode
+        versionName libVersionName
     }
 
     sourceSets {
@@ -32,6 +32,14 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
 }
 
+task verifyVersion << {
+    println()
+    println "VERSION CODE $android.defaultConfig.versionCode"
+    println()
+    println "VERSION NAME $android.defaultConfig.versionName"
+    println()
+}
+
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'konductor-arch'
@@ -45,7 +53,7 @@ ext {
     siteUrl = 'https://github.com/arnis71/arch'
     gitUrl = 'https://github.com/arnis71/arch.git'
 
-    libraryVersion = archVersion
+    libraryVersion = libVersionName
 
     developerId = 'arnis71'
     developerName = 'Arnis'
