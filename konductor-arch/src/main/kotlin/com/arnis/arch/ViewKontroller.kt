@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.arnis.konductor.Controller
+import com.arnis.konductor.ControllerChangeHandler
 import com.arnis.konductor.RouterTransaction
 import com.arnis.konductor.helper.KonductorActivity
 import org.jetbrains.anko.AnkoContext
@@ -16,10 +17,11 @@ abstract class ViewKontroller: Controller() {
     abstract val layout: AnkoContext<Context>.() -> Unit
     abstract val abstraction: Abstraction
 
-    fun routeTo(screen: String) = (activity as KonductorActivity).changeHandler.let {
+    fun routeTo(screen: String, overridePop: ControllerChangeHandler? = null, overridePush: ControllerChangeHandler?)
+            = (activity as KonductorActivity).changeHandler.let {
         router.pushController(RouterTransaction.with(it.route(screen))
-                .popChangeHandler(it.popHandler)
-                .pushChangeHandler(it.pushHandler))
+                .popChangeHandler(overridePop ?: it.popHandler)
+                .pushChangeHandler(overridePush?: it.pushHandler))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
