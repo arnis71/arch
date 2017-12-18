@@ -17,7 +17,9 @@ abstract class ViewKontroller: Controller() {
     abstract val layout: AnkoContext<Context>.() -> Unit
     abstract val abstraction: Abstraction
 
-    fun routeTo(screen: String, overridePop: ControllerChangeHandler? = null, overridePush: ControllerChangeHandler?)
+    fun routeTo(screen: String,
+                overridePop: ControllerChangeHandler? = null,
+                overridePush: ControllerChangeHandler? = null)
             = (activity as KonductorActivity).changeHandler.let {
         router.pushController(RouterTransaction.with(it.route(screen))
                 .popChangeHandler(overridePop ?: it.popHandler)
