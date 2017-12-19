@@ -13,9 +13,9 @@ import org.jetbrains.anko.UI
 
 /** Created by arnis on 07/12/2017 */
 
-abstract class ViewKontroller: Controller() {
+abstract class ViewKontroller<out T: Abstraction>: Controller() {
     abstract val layout: AnkoContext<Context>.() -> Unit
-    abstract val abstraction: Abstraction
+    abstract val abstraction: T
 
     fun routeTo(screen: String,
                 overridePop: ControllerChangeHandler? = null,
@@ -33,7 +33,7 @@ abstract class ViewKontroller: Controller() {
     override fun onDestroy() = abstraction.clear()
 }
 
-inline fun <reified T> ViewKontroller.bind(updateOnAttach: Boolean = true,
+inline fun <reified T> ViewKontroller<*>.bind(updateOnAttach: Boolean = true,
                                            updateImmediately: Boolean = false,
                                            noinline update: (data: T) -> Unit): KontrollerDataFlow<T> {
     return abstraction.get<T>().also {
