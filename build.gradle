@@ -16,7 +16,7 @@ buildscript {
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$androidJunit5Version"
 
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
     }
 }
 

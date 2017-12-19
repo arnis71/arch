@@ -34,7 +34,7 @@ def getVersionName() {
 
 def getVersionCode() {
     def object = getVersionObject()
-    return object.major * 100 + object.minor * 10 + object.patch
+    return object.major * 1000 + object.minor * 100 + object.patch
 }
 
 def getVersionObject() {
