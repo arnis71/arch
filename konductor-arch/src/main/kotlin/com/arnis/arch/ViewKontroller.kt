@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import com.arnis.konductor.Controller
 import com.arnis.konductor.ControllerChangeHandler
 import com.arnis.konductor.RouterTransaction
-import com.arnis.konductor.helper.KonductorActivity
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.UI
 
