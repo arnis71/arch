@@ -23,6 +23,7 @@ android {
 
 dependencies {
     api project(':konductor')
+    implementation project(':common')
     implementation "com.android.support:appcompat-v7:$supLibVer"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation "org.jetbrains.anko:anko-commons:$anko"

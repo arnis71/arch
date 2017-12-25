@@ -2,6 +2,7 @@ package com.arnis.arch
 
 import android.util.ArrayMap
 import android.view.View
+import com.arnis.common.animatePress
 import kotlin.reflect.KClass
 
 /** Created by arnis on 13/12/2017 */
@@ -24,6 +25,12 @@ abstract class Abstraction {
         view.setOnClickListener {
             handle(view.id)
         }
+    }
+
+    infix fun presses(view: View) {
+        view.animatePress(overshoot = false, endAction = Runnable {
+            handle(view.id)
+        })
     }
 
     inline fun <reified T> dispatch()
