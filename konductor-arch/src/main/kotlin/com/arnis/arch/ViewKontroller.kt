@@ -13,10 +13,10 @@ import org.jetbrains.anko.UI
 
 /** Created by arnis on 07/12/2017 */
 
-abstract class ViewKontroller(val abstraction: Abstraction, withParams: (Bundle.() -> Bundle)? = null) : Controller(withParams?.let { Bundle().let(it) }) {
+abstract class ViewKontroller<out T: Abstraction>(val abstraction: T, withParams: (Bundle.() -> Bundle)? = null) : Controller(withParams?.let { Bundle().let(it) }) {
     abstract val layout: AnkoContext<Context>.() -> Unit
 
-    fun routeTo(kontroller: ViewKontroller,
+    fun routeTo(kontroller: ViewKontroller<*>,
                 overridePop: ControllerChangeHandler? = null,
                 overridePush: ControllerChangeHandler? = null)
             = (activity as KonductorActivity).changeHandler.let {
@@ -32,7 +32,7 @@ abstract class ViewKontroller(val abstraction: Abstraction, withParams: (Bundle.
     override fun onDestroy() = abstraction.clear()
 }
 
-inline fun <reified T> ViewKontroller.bind(updateOnAttach: Boolean = true,
+inline fun <reified T> ViewKontroller<*>.bind(updateOnAttach: Boolean = true,
                                            noinline update: (data: T) -> Unit): KontrollerDataFlow<T> {
     return abstraction.get<T>().also {
         it.updateOnAttach = updateOnAttach
