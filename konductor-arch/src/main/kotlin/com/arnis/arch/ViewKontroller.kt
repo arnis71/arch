@@ -13,7 +13,9 @@ import org.jetbrains.anko.UI
 
 /** Created by arnis on 07/12/2017 */
 
-abstract class ViewKontroller<out T: Abstraction>(val abstraction: T, withParams: (Bundle.() -> Bundle)? = null) : Controller(withParams?.let { Bundle().let(it) }) {
+typealias Params = (Bundle.() -> Unit)
+
+abstract class ViewKontroller<out T: Abstraction>(val abstraction: T, withParams: Params? = null) : Controller(withParams?.let { Bundle().apply(it) }) {
     abstract val layout: AnkoContext<Context>.() -> Unit
 
     fun routeTo(kontroller: ViewKontroller<*>,
