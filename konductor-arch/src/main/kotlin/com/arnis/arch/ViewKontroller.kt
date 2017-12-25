@@ -12,9 +12,10 @@ import org.jetbrains.anko.UI
 
 /** Created by arnis on 07/12/2017 */
 
-abstract class ViewKontroller<out T: Abstraction>: Controller() {
-    abstract val layout: AnkoContext<Context>.() -> Unit
-    abstract val abstraction: T
+abstract class ViewKontroller<T: Abstraction>: Controller() {
+    abstract val layout: AnkoContext<Context>.(abstraction: T) -> Unit
+    val abstraction: T
+        get() = (activity as KonductorActivity).abstractions(this::class) as T
 
     fun routeTo(screen: String,
                 overridePop: ControllerChangeHandler? = null,
@@ -26,7 +27,7 @@ abstract class ViewKontroller<out T: Abstraction>: Controller() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
-        return container.context.UI(layout).view
+        return container.context.UI { layout(abstraction) }.view
     }
 
     override fun onDestroy() = abstraction.clear()
