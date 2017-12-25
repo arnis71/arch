@@ -1,6 +1,7 @@
 package com.arnis.arch
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,16 +13,16 @@ import org.jetbrains.anko.UI
 
 /** Created by arnis on 07/12/2017 */
 
-abstract class ViewKontroller<T: Abstraction>: Controller() {
+abstract class ViewKontroller<T: Abstraction>(withParams: (Bundle.() -> Bundle)? = null) : Controller(withParams?.let { Bundle().let(it) }) {
     abstract val layout: AnkoContext<Context>.(abstraction: T) -> Unit
     val abstraction: T
         get() = (activity as KonductorActivity).abstractions(this::class) as T
 
-    fun routeTo(screen: String,
+    fun routeTo(kontroller: ViewKontroller<*>,
                 overridePop: ControllerChangeHandler? = null,
                 overridePush: ControllerChangeHandler? = null)
             = (activity as KonductorActivity).changeHandler.let {
-        router.pushController(RouterTransaction.with(it.route(screen))
+        router.pushController(RouterTransaction.with(kontroller)
                 .popChangeHandler(overridePop ?: it.popHandler)
                 .pushChangeHandler(overridePush?: it.pushHandler))
     }
@@ -34,7 +35,6 @@ abstract class ViewKontroller<T: Abstraction>: Controller() {
 }
 
 inline fun <reified T> ViewKontroller<*>.bind(updateOnAttach: Boolean = true,
-                                           updateImmediately: Boolean = false,
                                            noinline update: (data: T) -> Unit): KontrollerDataFlow<T> {
     return abstraction.get<T>().also {
         it.updateOnAttach = updateOnAttach
