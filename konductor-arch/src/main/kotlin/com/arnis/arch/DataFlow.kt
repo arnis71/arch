@@ -26,7 +26,7 @@ abstract class BaseDataFlow<out T>(private val producer: DataFlowProducer<T>) {
 class KontrollerDataFlow<out T> (produce: DataFlowProducer<T>): BaseDataFlow<T>(produce) {
     var updateOnAttach: Boolean = true
 
-    fun bindTo(viewKontroller: ViewKontroller<*>) {
+    fun bindTo(viewKontroller: ViewKontroller) {
         viewKontroller.addLifecycleListener(object : Controller.LifecycleListener() {
             override fun postAttach(controller: Controller, view: View) {
                 attach()

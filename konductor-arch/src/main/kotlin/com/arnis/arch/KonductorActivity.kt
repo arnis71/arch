@@ -12,19 +12,15 @@ import kotlin.reflect.KClass
 
 abstract class KonductorActivity: AppCompatActivity() {
     private lateinit var router: Router
-    internal lateinit var abstractions: (clazz: KClass<*>) -> Abstraction
     var changeHandler = KonductorChangeHandler()
 
-    abstract fun rootController(): ViewKontroller<*>
-
-    abstract fun <T: Abstraction> abstractionFactory(): (clazz: KClass<*>) -> T
+    abstract fun rootController(): ViewKontroller
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val container = ChangeHandlerFrameLayout(this)
         setContentView(container)
         router = attachRouter(container, savedInstanceState)
-        abstractions = abstractionFactory()
         if (!router.hasRootController())
             router.setRoot(RouterTransaction.with(rootController()))
     }
