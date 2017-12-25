@@ -1,8 +1,11 @@
 package com.arnis.arch
 
 import android.util.ArrayMap
+import android.view.MotionEvent
+import android.view.SoundEffectConstants
 import android.view.View
-import com.arnis.common.animatePress
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import kotlin.reflect.KClass
 
 /** Created by arnis on 13/12/2017 */
@@ -28,9 +31,20 @@ abstract class Abstraction {
     }
 
     infix fun presses(view: View) {
-        view.animatePress(overshoot = false, endAction = Runnable {
-            handle(view.id)
-        })
+        view.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                    view.animate().scaleX(0.85f).scaleY(0.85f).setDuration(300).setInterpolator(DecelerateInterpolator()).start()
+                    v.performClick() }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL ->  {
+                    view.animate().scaleX(1f).scaleY(1f).setDuration(600).withEndAction {
+                        handle(view.id)
+                    }.setInterpolator(AccelerateInterpolator()).start()
+                }
+            }
+            true
+        }
     }
 
     inline fun <reified T> dispatch()
