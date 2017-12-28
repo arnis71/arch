@@ -32,6 +32,8 @@ abstract class ViewKontroller<out T: Abstraction>(val abstraction: T, withParams
     }
 
     override fun onDestroy() = abstraction.clear()
+
+    protected fun <K> fromArgs(key: String) = args[key] as K
 }
 
 inline fun <reified T> ViewKontroller<*>.bind(updateOnAttach: Boolean = true,
