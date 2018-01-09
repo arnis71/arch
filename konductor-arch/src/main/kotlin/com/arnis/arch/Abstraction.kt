@@ -50,5 +50,5 @@ abstract class Abstraction {
     inline fun <reified T> dispatch()
             = providers.asSequence().find { it.key == T::class }!!.value.flow()
 
-    fun clear() = providers.clear()
+    open fun clear() = providers.clear()
 }
