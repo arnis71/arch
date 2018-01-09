@@ -1,12 +1,13 @@
 package com.arnis.arch
 
+import android.os.Bundle
 import android.view.View
 import com.arnis.konductor.Controller
 
 /** Created by arnis on 13/12/2017 */
 
-typealias DataFlowProducer<T> = () -> T
-typealias DataFlowReceiver<T> = (data: T) -> Unit
+typealias DataFlowProducer<T> = (Any?) -> T
+typealias DataFlowReceiver<T> = (T) -> Unit
 
 abstract class BaseDataFlow<out T>(private val producer: DataFlowProducer<T>) {
 
@@ -16,7 +17,7 @@ abstract class BaseDataFlow<out T>(private val producer: DataFlowProducer<T>) {
         update = dataFlowReceiver
     }
 
-    fun flow() = update!!(producer())
+    fun flow(params: Any? = null) = update!!(producer(params))
 
     internal fun stop() {
         update = null
@@ -24,6 +25,7 @@ abstract class BaseDataFlow<out T>(private val producer: DataFlowProducer<T>) {
 }
 
 class KontrollerDataFlow<out T> (produce: DataFlowProducer<T>): BaseDataFlow<T>(produce) {
+
     var updateOnAttach: Boolean = true
 
     fun bindTo(viewKontroller: ViewKontroller<*>) {
