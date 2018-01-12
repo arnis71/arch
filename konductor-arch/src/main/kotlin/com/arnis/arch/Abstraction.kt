@@ -6,12 +6,16 @@ import android.view.SoundEffectConstants
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlin.reflect.KClass
 
 /** Created by arnis on 13/12/2017 */
 
 abstract class Abstraction {
     val providers: ArrayMap<KClass<*>, KontrollerDataFlow<*>> = ArrayMap()
+    private var compositeDisposable = CompositeDisposable()
+    private var usesRx = false
 
     inline fun <reified T> register(dataFlow: KontrollerDataFlow<T>)
             = providers.put(T::class, dataFlow)
@@ -23,6 +27,11 @@ abstract class Abstraction {
     }
 
     abstract fun handle(viewId: Int)
+
+    fun manageDisposable(disposable: Disposable) {
+        usesRx = true
+        compositeDisposable.add(disposable)
+    }
 
     infix fun clicks(view: View) {
         view.setOnClickListener {
@@ -50,5 +59,13 @@ abstract class Abstraction {
     inline fun <reified T> dispatch(params: Any? = null)
             = providers.asSequence().find { it.key == T::class }!!.value.flow(params)
 
-    open fun clear() = providers.clear()
+    internal fun destroyView() {
+        if (usesRx) {
+            compositeDisposable.dispose()
+            compositeDisposable.clear()
+            compositeDisposable = CompositeDisposable()
+        }
+    }
+
+    open fun destroy() = providers.clear()
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.arnis.konductor.Controller
 import com.arnis.konductor.ControllerChangeHandler
 import com.arnis.konductor.RouterTransaction
+import io.reactivex.disposables.Disposable
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.UI
 
@@ -31,7 +32,9 @@ abstract class ViewKontroller<out T: Abstraction>(val abstraction: T, withParams
         return container.context.UI(layout).view
     }
 
-    override fun onDestroy() = abstraction.clear()
+    override fun onDestroyView(view: View) = abstraction.destroyView()
+
+    override fun onDestroy() = abstraction.destroy()
 
     protected fun <K> fromArgs(key: String) = args[key] as K
 }
