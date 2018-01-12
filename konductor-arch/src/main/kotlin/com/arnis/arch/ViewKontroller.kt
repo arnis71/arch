@@ -47,11 +47,3 @@ inline fun <reified T> ViewKontroller<*>.bind(updateOnAttach: Boolean = true,
         it.bindTo(this, updateOnAttach)
     }
 }
-
-inline fun <reified T> ViewKontroller<*>.bindDeferred(updateOnAttach: Boolean = true,
-                                              noinline update: (data: T) -> Unit) {
-    (abstraction.get<Deferred<T>>() as DeferredDataFlow<T>).also {
-        it.onFlow = update
-        it.bindTo(this, updateOnAttach)
-    }
-}

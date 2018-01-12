@@ -2,6 +2,7 @@ package com.arnis.arch
 
 import android.view.View
 import com.arnis.konductor.Controller
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
@@ -31,11 +32,11 @@ class DataFlow<T>(private val produce: DataFlowProducer<T>) : BaseDataFlow<T>() 
             ?: dataFlowWithoutReceiver()
 }
 
-class DeferredDataFlow<T>(private val produce: DeferredDataFlowProducer<T>) : BaseDataFlow<T>() {
+class DeferredDataFlow<T>(private val produce: DeferredDataFlowProducer<T>, private val handlerContext: CoroutineDispatcher = UI) : BaseDataFlow<T>() {
     private var job: Job? = null
 
     override fun flow(params: Any?) {
-        job = launch(UI) { onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver() }
+        job = launch(handlerContext) { onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver() }
     }
 
     override fun stop() {
