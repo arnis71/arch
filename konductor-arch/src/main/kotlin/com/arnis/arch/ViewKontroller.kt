@@ -9,6 +9,7 @@ import com.arnis.konductor.Controller
 import com.arnis.konductor.ControllerChangeHandler
 import com.arnis.konductor.RouterTransaction
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.experimental.Deferred
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.UI
 
@@ -40,10 +41,17 @@ abstract class ViewKontroller<out T: Abstraction>(val abstraction: T, withParams
 }
 
 inline fun <reified T> ViewKontroller<*>.bind(updateOnAttach: Boolean = true,
-                                           noinline update: (data: T) -> Unit): KontrollerDataFlow<T> {
-    return abstraction.get<T>().also {
-        it.updateOnAttach = updateOnAttach
-        it.onFlow(update)
-        it.bindTo(this)
+                                           noinline update: (data: T) -> Unit) {
+    (abstraction.get<T>() as BaseDataFlow<T>).also {
+        it.onFlow = update
+        it.bindTo(this, updateOnAttach)
+    }
+}
+
+inline fun <reified T> ViewKontroller<*>.bindDeferred(updateOnAttach: Boolean = true,
+                                              noinline update: (data: T) -> Unit) {
+    (abstraction.get<Deferred<T>>() as DeferredDataFlow<T>).also {
+        it.onFlow = update
+        it.bindTo(this, updateOnAttach)
     }
 }

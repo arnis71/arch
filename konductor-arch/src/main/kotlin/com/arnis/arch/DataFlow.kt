@@ -1,51 +1,61 @@
 package com.arnis.arch
 
-import android.os.Bundle
 import android.view.View
 import com.arnis.konductor.Controller
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 
 /** Created by arnis on 13/12/2017 */
 
 typealias DataFlowProducer<T> = (Any?) -> T
 typealias DataFlowReceiver<T> = (T) -> Unit
 
-abstract class BaseDataFlow<out T>(private val producer: DataFlowProducer<T>) {
+typealias DeferredDataFlowProducer<T> = suspend (Any?) -> T
 
-    private var update: DataFlowReceiver<T>? = null
+abstract class BaseDataFlow<T> {
+    var onFlow: DataFlowReceiver<T>? = null
 
-    fun onFlow(dataFlowReceiver: DataFlowReceiver<T>) {
-        update = dataFlowReceiver
-    }
+    abstract fun flow(params: Any?)
 
-    fun flow(params: Any? = null) = update!!(producer(params))
-
-    internal fun stop() {
-        update = null
+    open fun stop() {
+        onFlow = null
     }
 }
 
-class KontrollerDataFlow<out T> (produce: DataFlowProducer<T>): BaseDataFlow<T>(produce) {
+class DataFlow<T>(private val produce: DataFlowProducer<T>) : BaseDataFlow<T>() {
 
-    var updateOnAttach: Boolean = true
+    override fun flow(params: Any?) = onFlow?.invoke(produce(params))
+            ?: dataFlowWithoutReceiver()
+}
 
-    fun bindTo(viewKontroller: ViewKontroller<*>) {
-        viewKontroller.addLifecycleListener(object : Controller.LifecycleListener() {
-            override fun postAttach(controller: Controller, view: View) {
-                attach()
-            }
-            override fun preDestroyView(controller: Controller, view: View) {
-                viewKontroller.removeLifecycleListener(this)
-                stop()
-            }
-        })
+class DeferredDataFlow<T>(private val produce: DeferredDataFlowProducer<T>) : BaseDataFlow<T>() {
+    private var job: Job? = null
+
+    override fun flow(params: Any?) {
+        job = launch(UI) { onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver() }
     }
 
-    internal fun attach() {
-        if (updateOnAttach) flow()
+    override fun stop() {
+        job?.cancel()
+        job = null
+        super.stop()
     }
 }
 
-//class DataFlowLifeCycle(val dataFlow: DataFlow<*>) {
-//    fun init() {}
-//    fun destroy() {}
-//}
+fun BaseDataFlow<*>.bindTo(viewKontroller: ViewKontroller<*>, updateOnAttach: Boolean) {
+    viewKontroller.addLifecycleListener(object : Controller.LifecycleListener() {
+        override fun postAttach(controller: Controller, view: View) {
+            if (updateOnAttach)
+                flow(null)
+        }
+        override fun preDestroyView(controller: Controller, view: View) {
+            viewKontroller.removeLifecycleListener(this)
+            stop()
+        }
+    })
+}
+
+private fun dataFlowWithoutReceiver(): Nothing = throw Exception("data flow does not have a receiver")

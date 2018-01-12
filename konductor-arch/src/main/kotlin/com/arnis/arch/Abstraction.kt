@@ -13,17 +13,17 @@ import kotlin.reflect.KClass
 /** Created by arnis on 13/12/2017 */
 
 abstract class Abstraction {
-    val providers: ArrayMap<KClass<*>, KontrollerDataFlow<*>> = ArrayMap()
+    val providers: ArrayMap<KClass<*>, BaseDataFlow<*>> = ArrayMap()
     private var compositeDisposable = CompositeDisposable()
     private var usesRx = false
 
-    inline fun <reified T> register(dataFlow: KontrollerDataFlow<T>)
+    inline fun <reified T> register(dataFlow: BaseDataFlow<T>)
             = providers.put(T::class, dataFlow)
 
-    inline fun <reified T> get(): KontrollerDataFlow<T> {
+    inline fun <reified T> get(): BaseDataFlow<*> {
         return providers.asSequence().filter {
             it.key == T::class
-        }.first().value as KontrollerDataFlow<T>
+        }.first().value
     }
 
     abstract fun handle(viewId: Int)
