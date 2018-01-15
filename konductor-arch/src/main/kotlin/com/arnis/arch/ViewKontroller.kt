@@ -20,14 +20,17 @@ typealias Params = (Bundle.() -> Unit)
 abstract class ViewKontroller<out T: Abstraction>(val abstraction: T, withParams: Params? = null) : Controller(withParams?.let { Bundle().apply(it) }) {
     abstract val layout: AnkoContext<Context>.() -> Unit
 
-    fun routeTo(kontroller: ViewKontroller<*>,
+    fun routeTo(tag: String? = null, kontroller: ViewKontroller<*>,
                 overridePop: ControllerChangeHandler? = null,
                 overridePush: ControllerChangeHandler? = null)
             = (activity as KonductorActivity).changeHandler.let {
         router.pushController(RouterTransaction.with(kontroller)
+                .tag(tag)
                 .popChangeHandler(overridePop ?: it.popHandler)
                 .pushChangeHandler(overridePush?: it.pushHandler))
     }
+
+    fun returnTo(tag: String) = router.popToTag(tag)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
         return container.context.UI(layout).view
