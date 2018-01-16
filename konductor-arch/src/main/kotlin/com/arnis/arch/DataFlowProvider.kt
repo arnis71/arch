@@ -20,14 +20,12 @@ abstract class DataFlowProvider {
     protected inline fun <reified T> register(dataFlow: BaseDataFlow<T>)
             = providers.put(T::class, dataFlow)
 
-    fun getFlow(clazz: KClass<*>): BaseDataFlow<*> {
-        return providers.asSequence().filter {
-            it.key == clazz
-        }.first().value
+    fun getFlow(clazz: KClass<*>): BaseDataFlow<*>? {
+        return providers[clazz]
     }
 
     protected inline fun <reified T> dispatch(params: Any? = null)
-            = getFlow(T::class).flow(params)
+            = getFlow(T::class)?.flow(params)
 
     fun manageDisposable(disposable: Disposable) {
         usesRx = true
