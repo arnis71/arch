@@ -12,7 +12,6 @@ import kotlin.reflect.KClass
 
 abstract class KonductorActivity: AppCompatActivity() {
     private lateinit var router: Router
-    var changeHandler = KonductorChangeHandler()
 
     abstract fun rootController(): ViewKontroller<*>
 
