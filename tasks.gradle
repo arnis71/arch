@@ -16,11 +16,17 @@ task bump << {
     def versionFile = new File("${rootProject.projectDir.path}/version.json")
     def object = new JsonSlurper().parseText(versionFile.text)
     switch (releaseType) {
-        case "patch": object.patch += 1
+        case "patch":
+            object.patch += 1
             break
-        case "minor": object.minor += 1
+        case "minor":
+            object.patch = 0
+            object.minor += 1
             break
-        case "major": object.major += 1
+        case "major":
+            object.patch = 0
+            object.minor = 0
+            object.major += 1
             break
         default: throw new Exception("unknown release type")
     }
