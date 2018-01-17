@@ -17,15 +17,17 @@ abstract class DataFlowProvider {
     private var compositeDisposable = CompositeDisposable()
     private var usesRx = false
 
-    protected inline fun <reified T> register(dataFlow: BaseDataFlow<T>)
-            = providers.put(T::class, dataFlow)
+    protected inline fun <reified T> register(dataFlow: BaseDataFlow<T>) {
+        providers.put(T::class, dataFlow)
+    }
 
     fun getFlow(clazz: KClass<*>): BaseDataFlow<*>? {
         return providers[clazz]
     }
 
-    protected inline fun <reified T> dispatch(params: Any? = null)
-            = getFlow(T::class)?.flow(params)
+    protected inline fun <reified T> dispatch(params: Any? = null) {
+        getFlow(T::class)?.flow(params)
+    }
 
     fun manageDisposable(disposable: Disposable) {
         usesRx = true

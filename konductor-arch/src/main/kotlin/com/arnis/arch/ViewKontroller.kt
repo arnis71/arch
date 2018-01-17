@@ -15,9 +15,10 @@ import kotlin.reflect.KClass
 
 /** Created by arnis on 07/12/2017 */
 
-abstract class ViewKontroller<in T: DataFlowProvider>(private var dataflowProvider: T?,
+abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
                                                       private val tag: String? = null,
                                                       args: Bundle? = null) : Controller(args) {
+    private var dataflowProvider: T? = dataflowProvider
 
     abstract fun AnkoContext<Context>.layout(dataFlowProvider: T)
 
