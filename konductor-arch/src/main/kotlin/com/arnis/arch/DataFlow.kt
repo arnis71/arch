@@ -8,6 +8,7 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.launch
 
 /** Created by arnis on 13/12/2017 */
@@ -22,14 +23,7 @@ abstract class BaseDataFlow<T> {
     }
 }
 
-class DataFlow<T>(private val produce: (Any?) -> T) : BaseDataFlow<T>() {
-
-    override fun flow(params: Any?) {
-        onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver()
-    }
-}
-
-class OptionalDataFlow<T>(private val produce: (Any?) -> T?) : BaseDataFlow<T?>() {
+open class DataFlow<T>(private val produce: (Any?) -> T) : BaseDataFlow<T>() {
 
     override fun flow(params: Any?) {
         onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver()
