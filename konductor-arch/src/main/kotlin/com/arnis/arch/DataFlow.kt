@@ -12,13 +12,8 @@ import kotlinx.coroutines.experimental.launch
 
 /** Created by arnis on 13/12/2017 */
 
-typealias DataFlowProducer<T> = (Any?) -> T
-typealias DataFlowReceiver<T> = (T) -> Unit
-
-typealias DeferredDataFlowProducer<T> = suspend (Any?) -> T
-
 abstract class BaseDataFlow<T> {
-    var onFlow: DataFlowReceiver<T>? = null
+    var onFlow: ((T) -> Unit)? = null
 
     abstract fun flow(params: Any?)
 
@@ -27,14 +22,21 @@ abstract class BaseDataFlow<T> {
     }
 }
 
-class DataFlow<T>(private val produce: DataFlowProducer<T>) : BaseDataFlow<T>() {
+class DataFlow<T>(private val produce: (Any?) -> T) : BaseDataFlow<T>() {
 
     override fun flow(params: Any?) {
         onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver()
     }
 }
 
-class DeferredDataFlow<T>(private val produce: DeferredDataFlowProducer<T>, private val handlerContext: CoroutineDispatcher = UI) : BaseDataFlow<T>() {
+class OptionalDataFlow<T>(private val produce: (Any?) -> T?) : BaseDataFlow<T?>() {
+
+    override fun flow(params: Any?) {
+        onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver()
+    }
+}
+
+class DeferredDataFlow<T>(private val produce: suspend (Any?) -> T, private val handlerContext: CoroutineDispatcher = UI) : BaseDataFlow<T>() {
     private var job: Job? = null
 
     override fun flow(params: Any?) {
