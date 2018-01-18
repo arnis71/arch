@@ -1,6 +1,7 @@
 package com.arnis.arch
 
 import android.util.ArrayMap
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SoundEffectConstants
 import android.view.View
@@ -28,7 +29,7 @@ abstract class DataFlowProvider {
     }
 
     protected inline fun <reified T> dispatch(params: Any? = null) {
-        getFlow(T::class)?.flow(params)
+        getFlow(T::class)?.flow(params) ?: Log.d("ARCH", "can not dispatch, no flow for class ${T::class}")
     }
 
     fun manageDisposable(disposable: Disposable) {

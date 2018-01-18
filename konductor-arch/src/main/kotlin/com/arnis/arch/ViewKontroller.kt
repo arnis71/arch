@@ -2,6 +2,7 @@ package com.arnis.arch
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,10 +50,19 @@ abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
     fun getFlowByClass(clazz: KClass<*>) = dataflowProvider!!.getFlow(clazz)
 }
 
-inline fun <reified T> ViewKontroller<*>.flow(updateOnAttach: Boolean = true,
+inline fun <reified T> ViewKontroller<*>.flow(invokeFlow: Boolean = true,
                                               noinline update: (data: T) -> Unit) {
-    (getFlowByClass(T::class) as BaseDataFlow<T>).also {
-        it.onFlow = update
-        it.bindTo(this, updateOnAttach)
-    }
+    getFlowByClass(T::class)?.apply {
+        (this as BaseDataFlow<T>).also {
+            it.onFlow = update
+            if (invokeFlow)
+                it.flow(null)
+            addLifecycleListener(object : Controller.LifecycleListener() {
+                override fun preDestroyView(controller: Controller, view: View) {
+                    removeLifecycleListener(this)
+                    it.stop()
+                }
+            })
+        }
+    } ?: Log.d("ARCH", "no data flow for class ${T::class}")
 }

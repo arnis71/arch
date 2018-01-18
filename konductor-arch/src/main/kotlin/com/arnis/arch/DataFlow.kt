@@ -1,5 +1,6 @@
 package com.arnis.arch
 
+import android.util.Log
 import android.view.View
 import com.arnis.konductor.Controller
 import kotlinx.coroutines.experimental.CoroutineDispatcher
@@ -28,8 +29,9 @@ abstract class BaseDataFlow<T> {
 
 class DataFlow<T>(private val produce: DataFlowProducer<T>) : BaseDataFlow<T>() {
 
-    override fun flow(params: Any?) = onFlow?.invoke(produce(params))
-            ?: dataFlowWithoutReceiver()
+    override fun flow(params: Any?) {
+        onFlow?.invoke(produce(params)) ?: dataFlowWithoutReceiver()
+    }
 }
 
 class DeferredDataFlow<T>(private val produce: DeferredDataFlowProducer<T>, private val handlerContext: CoroutineDispatcher = UI) : BaseDataFlow<T>() {
@@ -46,17 +48,4 @@ class DeferredDataFlow<T>(private val produce: DeferredDataFlowProducer<T>, priv
     }
 }
 
-fun BaseDataFlow<*>.bindTo(viewKontroller: ViewKontroller<*>, updateOnAttach: Boolean) {
-    viewKontroller.addLifecycleListener(object : Controller.LifecycleListener() {
-        override fun postAttach(controller: Controller, view: View) {
-            if (updateOnAttach)
-                flow(null)
-        }
-        override fun preDestroyView(controller: Controller, view: View) {
-            viewKontroller.removeLifecycleListener(this)
-            stop()
-        }
-    })
-}
-
-private fun dataFlowWithoutReceiver(): Nothing = throw Exception("data flow does not have a receiver")
+private fun dataFlowWithoutReceiver() = Log.d("ARCH", "skipping flow, no receiver")
