@@ -18,6 +18,10 @@ abstract class DataFlowProvider {
         providers[T::class] = DeferredDataFlow(handlerContext, producer)
     }
 
+    protected inline fun <reified T> addDirectDataFlow() {
+        providers[T::class] = DirectDataFlow<T>()
+    }
+
     internal fun cleanAfter(viewKontroller: ViewKontroller) {
         providers.removeAll(providers.filter {
             it.value.isOwningKontroller(viewKontroller).apply {
@@ -30,6 +34,10 @@ abstract class DataFlowProvider {
 
     fun getFlow(clazz: KClass<*>): BaseDataFlow<*> {
         return providers[clazz] ?: throw Exception("can not flow, no provider for $clazz")
+    }
+
+    protected inline fun <reified T> directFlow(value: T) {
+        (getFlow(T::class) as DirectDataFlow<T>).directFlow(value)
     }
 
     protected inline fun <reified T> forceFlow(params: Any? = null) {

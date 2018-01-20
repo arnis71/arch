@@ -34,7 +34,7 @@ abstract class BaseDataFlow<T> {
     }
 }
 
-open class DataFlow<T>(producer: (Any?) -> T) : BaseDataFlow<T>() {
+class DataFlow<T>(producer: (Any?) -> T) : BaseDataFlow<T>() {
     private var producer: ((Any?) -> T)? = producer
 
     override fun flow(params: Any?) {
@@ -44,6 +44,17 @@ open class DataFlow<T>(producer: (Any?) -> T) : BaseDataFlow<T>() {
     override fun stop() {
         super.stop()
         producer = null
+    }
+}
+
+class DirectDataFlow<T> : BaseDataFlow<T>() {
+
+    override fun flow(params: Any?) {
+        throw UnsupportedOperationException("not supported in DirectDataFlow class, invoke directFlow( function instead")
+    }
+
+    fun directFlow(value: T) {
+        receiver?.invoke(value) ?: dataFlowWithoutReceiver()
     }
 }
 
