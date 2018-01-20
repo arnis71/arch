@@ -53,7 +53,7 @@ class DirectDataFlow<T> : BaseDataFlow<T>() {
     override fun flow(params: Any?) {
         cachedValue?.let {
             receiver?.invoke(it) ?: dataFlowWithoutReceiver()
-        } ?: Log.d("ARCH", "skipping flow? no cached value")
+        } ?: Log.d("ARCH", "skipping flow, no cached value")
     }
 
     fun directFlow(value: T) {

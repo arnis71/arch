@@ -28,11 +28,12 @@ abstract class ViewKontroller(args: Bundle? = null) : Controller(args) {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
+        provider?.attach()
         return container.context.UI { onLayout() }.view
     }
 
     override fun onDestroyView(view: View) {
-        provider?.cleanAfter(this)
+        provider?.detach(this)
     }
 
     override fun onDestroy() {

@@ -22,15 +22,21 @@ abstract class DataFlowProvider {
         providers[T::class] = DirectDataFlow<T>()
     }
 
-    internal fun cleanAfter(viewKontroller: ViewKontroller) {
+    internal fun attach() {
+        onAttach()
+    }
+    internal fun detach(viewKontroller: ViewKontroller) {
         providers.removeAll(providers.filter {
             it.value.isOwningKontroller(viewKontroller).apply {
                 if (this)
                     it.value.detachFromKontroller(viewKontroller)
             }
         }.map { it.key })
-        onLeaveViewKontroller(viewKontroller.tag)
+        onDetach(viewKontroller.tag)
     }
+
+    open fun onAttach() {}
+    open fun onDetach(kontrollerTag: String) {}
 
     fun getFlow(clazz: KClass<*>): BaseDataFlow<*> {
         return providers[clazz] ?: throw Exception("can not flow, no provider for $clazz")
@@ -43,8 +49,6 @@ abstract class DataFlowProvider {
     protected inline fun <reified T> forceFlow(params: Any? = null) {
         getFlow(T::class).flow(params)
     }
-
-    open fun onLeaveViewKontroller(tag: String) {}
 }
 
 //    open fun handle(viewId: Int) {}
