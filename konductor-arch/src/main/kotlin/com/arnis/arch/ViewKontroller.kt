@@ -21,7 +21,7 @@ abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
                                                       args: Bundle? = null) : Controller(args) {
     private var dataflowProvider: T? = dataflowProvider
 
-    abstract fun AnkoContext<Context>.layout(dataFlowProvider: T)
+    abstract fun AnkoContext<Context>.layout(provider: T)
 
     fun routeTo(kontroller: ViewKontroller<*>,
                 overridePop: ControllerChangeHandler? = null,
@@ -33,6 +33,8 @@ abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
     }
 
     fun returnTo(tag: String) = router.popToTag(tag)
+
+    fun routeBack() = router.popCurrentController()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
         return container.context.UI { layout(dataflowProvider!!) }.view
