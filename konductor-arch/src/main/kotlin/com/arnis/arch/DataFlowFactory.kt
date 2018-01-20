@@ -5,14 +5,14 @@ import kotlin.reflect.KClass
 
 /** Created by arnis on 16/01/2018 */
 
-internal object DataFlowFactory {
+object DataFlowFactory {
     private val map: ArrayMap<KClass<*>, FactoryInstance> = ArrayMap()
 
-    fun <T: DataFlowProvider> put(clazz: KClass<T>, maker: () -> DataFlowProvider) {
+    fun <T: DataFlowProvider> provide(clazz: KClass<T>, maker: () -> DataFlowProvider) {
         map[clazz] = FactoryInstance(maker)
     }
 
-    fun <T: DataFlowProvider> get(clazz: KClass<T>): T {
+    internal fun <T: DataFlowProvider> get(clazz: KClass<T>): T {
         return map[clazz]?.run {
             if (instance == null)
                 instance = maker()
