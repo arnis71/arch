@@ -48,13 +48,22 @@ class DataFlow<T>(producer: (Any?) -> T) : BaseDataFlow<T>() {
 }
 
 class DirectDataFlow<T> : BaseDataFlow<T>() {
+    private var cachedValue: T? = null
 
     override fun flow(params: Any?) {
-        throw UnsupportedOperationException("not supported in DirectDataFlow class, invoke directFlow( function instead")
+        cachedValue?.let {
+            receiver?.invoke(it) ?: dataFlowWithoutReceiver()
+        } ?: Log.d("ARCH", "skipping flow? no cached value")
     }
 
     fun directFlow(value: T) {
+        cachedValue = value
         receiver?.invoke(value) ?: dataFlowWithoutReceiver()
+    }
+
+    override fun stop() {
+        super.stop()
+        cachedValue = null
     }
 }
 
