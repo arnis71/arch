@@ -2,13 +2,9 @@ package com.arnis.arch
 
 import android.util.ArrayMap
 import android.util.Log
-import android.view.MotionEvent
-import android.view.SoundEffectConstants
-import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlin.reflect.KClass
 
 /** Created by arnis on 13/12/2017 */
@@ -18,18 +14,22 @@ abstract class DataFlowProvider {
     private var compositeDisposable = CompositeDisposable()
     private var usesRx = false
 
-    protected inline fun <reified T> register(dataFlow: BaseDataFlow<T>, invokeFlow: Boolean = false) {
-        providers[T::class] = dataFlow
-        if (invokeFlow)
-            dataFlow.flow(null)
+    protected inline fun <reified T> addDataFlow(noinline producer: (Any?) -> T) {
+        providers[T::class] = DataFlow(producer)
+    }
+
+    protected inline fun <reified T> addDeferredDataFlow(handlerContext: CoroutineDispatcher,
+                                                         noinline producer: suspend (Any?) -> T) {
+        providers[T::class] = DeferredDataFlow(handlerContext, producer)
     }
 
     fun getFlow(clazz: KClass<*>): BaseDataFlow<*>? {
         return providers[clazz]
     }
 
-    protected inline fun <reified T> dispatch(params: Any? = null) {
-        getFlow(T::class)?.flow(params) ?: Log.d("ARCH", "can not dispatch, no flow for class ${T::class}")
+    protected inline fun <reified T> forceFlow(params: Any? = null) {
+        getFlow(T::class)?.flow(params)
+                ?: Log.d("ARCH", "can not forceFlow, no flow for class ${T::class}")
     }
 
     fun manageDisposable(disposable: Disposable) {
@@ -37,15 +37,22 @@ abstract class DataFlowProvider {
         compositeDisposable.add(disposable)
     }
 
-    internal fun onDestroyView() {
+    internal fun destroyView() {
         if (usesRx) {
             compositeDisposable.dispose()
             compositeDisposable.clear()
             compositeDisposable = CompositeDisposable()
         }
+        onDestroyView()
     }
 
-    open fun destroy() = providers.clear()
+    internal fun destroy() {
+        providers.clear()
+        onDestroy()
+    }
+
+    open fun onDestroy() {}
+    open fun onDestroyView() {}
 }
 
 //    open fun handle(viewId: Int) {}

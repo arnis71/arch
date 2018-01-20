@@ -11,7 +11,6 @@ import com.arnis.konductor.ControllerChangeHandler
 import com.arnis.konductor.RouterTransaction
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.UI
-import org.jetbrains.anko.relativeLayout
 import kotlin.reflect.KClass
 
 /** Created by arnis on 07/12/2017 */
@@ -40,7 +39,7 @@ abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
         return container.context.UI { layout(dataflowProvider!!) }.view
     }
 
-    override fun onDestroyView(view: View) = dataflowProvider!!.onDestroyView()
+    override fun onDestroyView(view: View) = dataflowProvider!!.destroyView()
 
     override fun onDestroy() {
         dataflowProvider!!.destroy()
@@ -51,10 +50,10 @@ abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
 }
 
 inline fun <reified T> ViewKontroller<*>.flow(invokeFlow: Boolean = true,
-                                              noinline update: (data: T) -> Unit) {
+                                              noinline receiver: (data: T) -> Unit) {
     getFlowByClass(T::class)?.apply {
         (this as BaseDataFlow<T>).also {
-            it.onFlow = update
+            it.receiver = receiver
             if (invokeFlow)
                 it.flow(null)
             addLifecycleListener(object : Controller.LifecycleListener() {
