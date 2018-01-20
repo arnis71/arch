@@ -1,9 +1,6 @@
 package com.arnis.arch
 
 import android.util.ArrayMap
-import android.util.Log
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlin.reflect.KClass
 
@@ -11,8 +8,6 @@ import kotlin.reflect.KClass
 
 abstract class DataFlowProvider {
     protected val providers: ArrayMap<KClass<*>, BaseDataFlow<*>> = ArrayMap()
-    private var compositeDisposable = CompositeDisposable()
-    private var usesRx = false
 
     protected inline fun <reified T> addDataFlow(noinline producer: (Any?) -> T) {
         providers[T::class] = DataFlow(producer)
@@ -23,36 +18,25 @@ abstract class DataFlowProvider {
         providers[T::class] = DeferredDataFlow(handlerContext, producer)
     }
 
-    fun getFlow(clazz: KClass<*>): BaseDataFlow<*>? {
-        return providers[clazz]
+    internal fun cleanAfter(viewKontroller: ViewKontroller) {
+        providers.removeAll(providers.filter {
+            it.value.isOwningKontroller(viewKontroller).apply {
+                if (this)
+                    it.value.detachFromKontroller(viewKontroller)
+            }
+        }.map { it.key })
+        onLeaveViewKontroller(viewKontroller.tag)
+    }
+
+    fun getFlow(clazz: KClass<*>): BaseDataFlow<*> {
+        return providers[clazz] ?: throw Exception("can not flow, no provider for $clazz")
     }
 
     protected inline fun <reified T> forceFlow(params: Any? = null) {
-        getFlow(T::class)?.flow(params)
-                ?: Log.d("ARCH", "can not forceFlow, no flow for class ${T::class}")
+        getFlow(T::class).flow(params)
     }
 
-    fun manageDisposable(disposable: Disposable) {
-        usesRx = true
-        compositeDisposable.add(disposable)
-    }
-
-    internal fun destroyView() {
-        if (usesRx) {
-            compositeDisposable.dispose()
-            compositeDisposable.clear()
-            compositeDisposable = CompositeDisposable()
-        }
-        onDestroyView()
-    }
-
-    internal fun destroy() {
-        providers.clear()
-        onDestroy()
-    }
-
-    open fun onDestroy() {}
-    open fun onDestroyView() {}
+    open fun onLeaveViewKontroller(tag: String) {}
 }
 
 //    open fun handle(viewId: Int) {}

@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 abstract class KonductorActivity: AppCompatActivity() {
     private lateinit var router: Router
 
-    abstract fun rootController(): ViewKontroller<*>
+    abstract fun rootController(): ViewKontroller
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -2,7 +2,6 @@ package com.arnis.arch
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +14,35 @@ import kotlin.reflect.KClass
 
 /** Created by arnis on 07/12/2017 */
 
-abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
-                                                      private val tag: String? = null,
-                                                      args: Bundle? = null) : Controller(args) {
-    private var dataflowProvider: T? = dataflowProvider
+abstract class ViewKontroller(args: Bundle? = null) : Controller(args) {
+    private var provider: DataFlowProvider? = null
 
-    abstract fun AnkoContext<Context>.layout(provider: T)
+    abstract val tag: String
+    abstract fun AnkoContext<Context>.onLayout()
 
-    fun routeTo(kontroller: ViewKontroller<*>,
+    fun <T: DataFlowProvider> bindProvider(clazz: KClass<T>, run: T.() -> Unit = {}) {
+        DataFlowFactory.get(clazz).also {
+            it.run()
+            provider = it
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
+        return container.context.UI { onLayout() }.view
+    }
+
+    override fun onDestroyView(view: View) {
+        provider?.cleanAfter(this)
+    }
+
+    override fun onDestroy() {
+        provider = null
+    }
+
+    fun getFlowByClass(clazz: KClass<*>) = provider?.getFlow(clazz)
+            ?: throw Exception("can not flow, no provider")
+
+    fun routeTo(kontroller: ViewKontroller,
                 overridePop: ControllerChangeHandler? = null,
                 overridePush: ControllerChangeHandler? = null) {
         router.pushController(RouterTransaction.with(kontroller)
@@ -34,34 +54,13 @@ abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
     fun returnTo(tag: String) = router.popToTag(tag)
 
     fun routeBack() = router.popCurrentController()
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
-        return container.context.UI { layout(dataflowProvider!!) }.view
-    }
-
-    override fun onDestroyView(view: View) = dataflowProvider!!.destroyView()
-
-    override fun onDestroy() {
-        dataflowProvider!!.destroy()
-        dataflowProvider = null
-    }
-
-    fun getFlowByClass(clazz: KClass<*>) = dataflowProvider!!.getFlow(clazz)
 }
 
-inline fun <reified T> ViewKontroller<*>.flow(invokeFlow: Boolean = true,
+inline fun <reified T> ViewKontroller.flow(invokeFlow: Boolean = true,
                                               noinline receiver: (data: T) -> Unit) {
-    getFlowByClass(T::class)?.apply {
-        (this as BaseDataFlow<T>).also {
-            it.receiver = receiver
-            if (invokeFlow)
-                it.flow(null)
-            addLifecycleListener(object : Controller.LifecycleListener() {
-                override fun preDestroyView(controller: Controller, view: View) {
-                    removeLifecycleListener(this)
-                    it.stop()
-                }
-            })
-        }
-    } ?: Log.d("ARCH", "no data flow for class ${T::class}")
+    (getFlowByClass(T::class) as BaseDataFlow<T>).apply {
+        attachToKontroller(this@flow, receiver)
+        if (invokeFlow)
+            flow(null)
+    }
 }

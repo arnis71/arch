@@ -29,7 +29,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-sdk19:$anko"
     implementation "org.jetbrains.anko:anko-appcompat-v7:$anko"
     implementation "org.jetbrains.anko:anko-coroutines:$anko"
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
+//    implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
 }
 
 task verifyVersion << {
