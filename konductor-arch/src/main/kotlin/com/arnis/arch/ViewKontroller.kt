@@ -47,8 +47,6 @@ abstract class ViewKontroller<in T: DataFlowProvider>(dataflowProvider: T,
         dataflowProvider = null
     }
 
-    protected fun <K> fromArgs(key: String) = args[key] as K
-
     fun getFlowByClass(clazz: KClass<*>) = dataflowProvider!!.getFlow(clazz)
 }
 
