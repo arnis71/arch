@@ -8,7 +8,11 @@ import kotlin.reflect.KClass
 internal object DataFlowFactory {
     private val map: ArrayMap<KClass<*>, FactoryInstance> = ArrayMap()
 
-    internal fun <T: DataFlowProvider> get(clazz: KClass<T>): T {
+    fun <T: DataFlowProvider> put(clazz: KClass<T>, maker: () -> DataFlowProvider) {
+        map[clazz] = FactoryInstance(maker)
+    }
+
+    fun <T: DataFlowProvider> get(clazz: KClass<T>): T {
         return map[clazz]?.run {
             if (instance == null)
                 instance = maker()
@@ -16,4 +20,6 @@ internal object DataFlowFactory {
         } ?: throw Exception("no provider found for class $clazz")
     }
 }
-internal class FactoryInstance(val maker: () -> Any, var instance: Any? = null)
+
+internal class FactoryInstance (val maker: () -> DataFlowProvider,
+                                var instance: DataFlowProvider? = null)

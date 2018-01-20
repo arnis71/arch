@@ -28,4 +28,10 @@ abstract class KonductorActivity: AppCompatActivity() {
         if (!router.handleBack())
             super.onBackPressed()
     }
+
+    abstract fun providerFactory()
+
+    fun <T: DataFlowProvider> provide(clazz: KClass<T>, maker: () -> T) {
+        DataFlowFactory.put(clazz, maker)
+    }
 }
