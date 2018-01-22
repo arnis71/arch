@@ -1,1 +1,1 @@
-include ':app', ':konductor-arch', ':conductor-lint', ':konductor', ':common'
+include ':app', ':konductor-arch', ':conductor-lint', ':konductor'
