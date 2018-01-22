@@ -1,8 +1,6 @@
 package com.arnis.arch
 
 import android.util.Log
-import android.view.View
-import com.arnis.konductor.Controller
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch

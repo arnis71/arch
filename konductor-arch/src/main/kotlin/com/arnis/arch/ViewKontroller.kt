@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.arnis.konductor.Controller
-import com.arnis.konductor.ControllerChangeHandler
-import com.arnis.konductor.RouterTransaction
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.RouterTransaction
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.UI
 import kotlin.reflect.KClass
@@ -46,7 +46,8 @@ abstract class ViewKontroller(args: Bundle? = null) : Controller(args) {
     fun routeTo(kontroller: ViewKontroller,
                 overridePop: ControllerChangeHandler? = null,
                 overridePush: ControllerChangeHandler? = null) {
-        router.pushController(RouterTransaction.with(kontroller)
+        router.pushController(
+            RouterTransaction.with(kontroller)
                 .tag(kontroller.tag)
                 .popChangeHandler(overridePop ?: KonductorChangeHandler.popHandler)
                 .pushChangeHandler(overridePush?: KonductorChangeHandler.pushHandler))
