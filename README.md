@@ -1,8 +1,10 @@
 [ ![Download](https://api.bintray.com/packages/arnis71/maven/konductor-arch/images/download.svg) ](https://bintray.com/arnis71/maven/konductor-arch/_latestVersion)
 
+# Konductor architecture
+
 ## What is this?
 
-This is an experimental framework module that provides tools for building an app with reactive/data-binding methodology. It heavily relies on Conductor and Anko Layouts libraries.
+This is an experimental framework that provides tools for building an app with reactive/data-binding methodology. It heavily relies on Conductor and Anko Layouts libraries.
 
 ## Why use this?
 
