@@ -1,7 +1,7 @@
 apply from: "$rootDir/tasks.gradle"
 
 buildscript {
-    ext.kotlin_version = '1.2.0'
+    ext.kotlin_version = '1.2.20'
     ext.androidJunit5Version = '1.0.12'
     ext.junitPlatformVersion = '1.0.1'
     repositories {
