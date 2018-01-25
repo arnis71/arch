@@ -28,7 +28,7 @@ abstract class ViewKontroller(args: Bundle? = null) : Controller(args) {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
-        provider?.attach()
+        provider?.attach(tag)
         return container.context.UI { onLayout() }.view
     }
 

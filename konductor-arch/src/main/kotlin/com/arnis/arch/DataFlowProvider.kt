@@ -22,8 +22,8 @@ abstract class DataFlowProvider {
         providers[T::class] = DirectDataFlow<T>()
     }
 
-    internal fun attach() {
-        onAttach()
+    internal fun attach(kontrollerTag: String) {
+        onAttach(kontrollerTag)
     }
     internal fun detach(viewKontroller: ViewKontroller) {
         providers.removeAll(providers.filter {
@@ -35,7 +35,7 @@ abstract class DataFlowProvider {
         onDetach(viewKontroller.tag)
     }
 
-    open fun onAttach() {}
+    open fun onAttach(kontrollerTag: String) {}
     open fun onDetach(kontrollerTag: String) {}
 
     fun getFlow(clazz: KClass<*>): BaseDataFlow<*> {
