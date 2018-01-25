@@ -1,6 +1,7 @@
 package com.arnis.arch
 
 import android.util.ArrayMap
+import android.util.Log
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlin.reflect.KClass
 
@@ -8,6 +9,7 @@ import kotlin.reflect.KClass
 
 abstract class DataFlowProvider {
     protected val providers: ArrayMap<KClass<*>, BaseDataFlow<*>> = ArrayMap()
+    private var currentViewKontroller: String = ""
 
     protected inline fun <reified T> addDataFlow(noinline producer: (Any?) -> T) {
         providers[T::class] = DataFlow(producer)
@@ -23,16 +25,20 @@ abstract class DataFlowProvider {
     }
 
     internal fun attach(kontrollerTag: String) {
+        currentViewKontroller = kontrollerTag
         onAttach(kontrollerTag)
     }
     internal fun detach(viewKontroller: ViewKontroller) {
-        providers.removeAll(providers.filter {
-            it.value.isOwningKontroller(viewKontroller).apply {
-                if (this)
-                    it.value.detachFromKontroller(viewKontroller)
-            }
-        }.map { it.key })
-        onDetach(viewKontroller.tag)
+        if (currentViewKontroller == viewKontroller.tag) {
+            providers.removeAll(providers.filter {
+                it.value.isOwningKontroller(viewKontroller).apply {
+                    if(this)
+                        it.value.detachFromKontroller(viewKontroller)
+                }
+            }.map { it.key })
+            onDetach(viewKontroller.tag)
+        } else
+            Log.w("ARCH", "skipping detach from ${viewKontroller.tag}, attached to $currentViewKontroller")
     }
 
     open fun onAttach(kontrollerTag: String) {}
