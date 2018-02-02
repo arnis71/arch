@@ -56,6 +56,18 @@ abstract class ViewKontroller(args: Bundle? = null) : Controller(args) {
     fun returnTo(tag: String) = router.popToTag(tag)
 
     fun routeBack() = router.popCurrentController()
+
+    fun ViewGroup.child(kontroller: ViewKontroller,
+                        overridePop: ControllerChangeHandler? = null,
+                        overridePush: ControllerChangeHandler? = null) {
+        getChildRouter(this).setPopsLastView(false).run {
+            if (!hasRootController())
+                setRoot(RouterTransaction.with(kontroller)
+                    .tag(kontroller.tag)
+                    .popChangeHandler(overridePop ?: KonductorChangeHandler.popHandler)
+                    .pushChangeHandler(overridePush?: KonductorChangeHandler.pushHandler))
+        }
+    }
 }
 
 inline fun <reified T> ViewKontroller.flow(invokeFlow: Boolean = true,
