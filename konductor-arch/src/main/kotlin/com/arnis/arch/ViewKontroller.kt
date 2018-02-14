@@ -27,6 +27,8 @@ abstract class ViewKontroller(args: Bundle? = null) : Controller(args) {
         }
     }
 
+    fun <T: DataFlowProvider> getProvider() = provider as T
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View  {
         provider?.attach(tag)
         return container.context.UI { onLayout() }.view
